@@ -1,0 +1,228 @@
+Enter password: **********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 11
+Server version: 8.4.0 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| attendences_db     |
+| class              |
+| information_schema |
+| library            |
+| mysql              |
+| performance_schema |
+| serge              |
+| sys                |
++--------------------+
+8 rows in set (0.41 sec)
+
+mysql> use library;
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_library |
++-------------------+
+| books             |
+| student           |
++-------------------+
+2 rows in set (0.12 sec)
+
+mysql> desc books;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| book_id | varchar(10) | NO   | PRI | NULL    |       |
+| title   | varchar(10) | NO   |     | NULL    |       |
+| author  | varchar(20) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+3 rows in set (0.17 sec)
+
+mysql> desc student;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| id     | int         | NO   | PRI | NULL    |       |
+| names  | varchar(50) | NO   |     | NULL    |       |
+| adress | varchar(20) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> create table loans(loan_id int(10) primary key, bookid varchar(10), foreign key(bookid) references books(book_id), studentid int(10), foreign key(studentid) references student(id), loan_date date, returen_date date);
+Query OK, 0 rows affected, 2 warnings (4.63 sec)
+
+mysql> desc loans;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| loan_id      | int         | NO   | PRI | NULL    |       |
+| bookid       | varchar(10) | YES  | MUL | NULL    |       |
+| studentid    | int         | YES  | MUL | NULL    |       |
+| loan_date    | date        | YES  |     | NULL    |       |
+| returen_date | date        | YES  |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+5 rows in set (0.16 sec)
+
+mysql> insert into student values(1,'iradukunda','kagugu');
+Query OK, 1 row affected (0.43 sec)
+
+mysql> insert into student values(2,'shema','kacyiru');
+Query OK, 1 row affected (0.13 sec)
+
+mysql> insert into student values(3,'julien','gishushu');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> insert into student values(4,'ganza','remera');
+Query OK, 1 row affected (0.14 sec)
+
+mysql> insert into student values(5,'mireille','nyamirambo');
+Query OK, 1 row affected (0.10 sec)
+
+mysql> insert into books values('B_01','DCF','serge');
+Query OK, 1 row affected (0.13 sec)
+
+mysql> insert into books values('B_02','pl/sql','eric');
+Query OK, 1 row affected (0.09 sec)
+
+mysql> insert into books values('B_03','CN','joshua');
+Query OK, 1 row affected (0.10 sec)
+
+mysql> insert into books values('B_04','ICP','prince');
+Query OK, 1 row affected (0.11 sec)
+
+mysql> insert into books values('B_05','maths','herman');
+Query OK, 1 row affected (0.09 sec)
+
+mysql> insert into loans values('1','B_01','1','10/2/2001','20/2/2002');
+ERROR 1292 (22007): Incorrect date value: '10/2/2001' for column 'loan_date' at row 1
+mysql> insert into loans values('1','B_01','1',10/2/2001,20/2/2002);
+ERROR 1292 (22007): Incorrect date value: '0.002498750624687656' for column 'loan_date' at row 1
+mysql> insert into loans values('1','B_01','1',SYSDATE,NULL);
+ERROR 1054 (42S22): Unknown column 'SYSDATE' in 'field list'
+mysql> insert into loans values('1','B_01','1','2000-10-1','2000-11-1');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> insert into loans values('2','B_2','2','2001-10-1','2001-11-1');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`library`.`loans`, CONSTRAINT `loans_ibfk_1` FOREIGN KEY (`bookid`) REFERENCES `books` (`book_id`))
+mysql> insert into loans values('2','B_02','2','2001-10-1','2001-11-1');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into loans values('2','B_03','3','2002-10-1','2002-11-1');
+ERROR 1062 (23000): Duplicate entry '2' for key 'loans.PRIMARY'
+mysql> insert into loans values('3','B_03','3','2002-10-1','2002-11-1');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> insert into loans values('4','B_04','4','2003-10-1','2003-11-1');
+Query OK, 1 row affected (0.15 sec)
+
+mysql> insert into loans values('5','B_05','5','2005-10-1','2005-11-1');
+Query OK, 1 row affected (0.17 sec)
+
+mysql> select*from student;
++----+------------+------------+
+| id | names      | adress     |
++----+------------+------------+
+|  1 | iradukunda | kagugu     |
+|  2 | shema      | kacyiru    |
+|  3 | julien     | gishushu   |
+|  4 | ganza      | remera     |
+|  5 | mireille   | nyamirambo |
++----+------------+------------+
+5 rows in set (0.06 sec)
+
+mysql> select*from books;
++---------+--------+--------+
+| book_id | title  | author |
++---------+--------+--------+
+| B_01    | DCF    | serge  |
+| B_02    | pl/sql | eric   |
+| B_03    | CN     | joshua |
+| B_04    | ICP    | prince |
+| B_05    | maths  | herman |
++---------+--------+--------+
+5 rows in set (0.00 sec)
+
+mysql> select*from loans;
++---------+--------+-----------+------------+--------------+
+| loan_id | bookid | studentid | loan_date  | returen_date |
++---------+--------+-----------+------------+--------------+
+|       1 | B_01   |         1 | 2000-10-01 | 2000-11-01   |
+|       2 | B_02   |         2 | 2001-10-01 | 2001-11-01   |
+|       3 | B_03   |         3 | 2002-10-01 | 2002-11-01   |
+|       4 | B_04   |         4 | 2003-10-01 | 2003-11-01   |
+|       5 | B_05   |         5 | 2005-10-01 | 2005-11-01   |
++---------+--------+-----------+------------+--------------+
+5 rows in set (0.02 sec)
+
+mysql> update student set adress= musanze where id=2;
+ERROR 1054 (42S22): Unknown column 'musanze' in 'field list'
+mysql> update student set column adress= musanze where id=2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'column adress= musanze where id=2' at line 1
+mysql> update student set column adress= 'musanze' where id=2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'column adress= 'musanze' where id=2' at line 1
+mysql> update student set adress= 'musanze' where id=2;
+Query OK, 1 row affected (0.15 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> select*from student;
++----+------------+------------+
+| id | names      | adress     |
++----+------------+------------+
+|  1 | iradukunda | kagugu     |
+|  2 | shema      | musanze    |
+|  3 | julien     | gishushu   |
+|  4 | ganza      | remera     |
+|  5 | mireille   | nyamirambo |
++----+------------+------------+
+5 rows in set (0.00 sec)
+
+mysql> delete from loans where loanid=1;
+ERROR 1054 (42S22): Unknown column 'loanid' in 'where clause'
+mysql> delete from loans where loan_id=1;
+Query OK, 1 row affected (0.12 sec)
+
+mysql> select*from loans;
++---------+--------+-----------+------------+--------------+
+| loan_id | bookid | studentid | loan_date  | returen_date |
++---------+--------+-----------+------------+--------------+
+|       2 | B_02   |         2 | 2001-10-01 | 2001-11-01   |
+|       3 | B_03   |         3 | 2002-10-01 | 2002-11-01   |
+|       4 | B_04   |         4 | 2003-10-01 | 2003-11-01   |
+|       5 | B_05   |         5 | 2005-10-01 | 2005-11-01   |
++---------+--------+-----------+------------+--------------+
+4 rows in set (0.00 sec)
+
+mysql> -- Inner join between Books and Loans to see who borrowed which book
+Query OK, 0 rows affected (0.02 sec)
+mysql> alter table books add publisher varchar(10);
+Query OK, 0 rows affected (3.51 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+mysql> Create view summary as select s.id, s.names, b.title, l.loan_date  from student s join books b on b.book_id =l.bookid join loans l on l.studentid = s.id;
+ERROR 1054 (42S22): Unknown column 'l.bookid' in 'on clause'
+mysql> Create view summary as select s.id, s.names, b.title, l.loan_date  from student s join loans l  on s.id =l.studentid join books b on l.bookid = b.book_id;
+Query OK, 0 rows affected (2.54 sec)
+
+mysql> select * from summary ;
++----+----------+--------+------------+
+| id | names    | title  | loan_date  |
++----+----------+--------+------------+
+|  2 | shema    | pl/sql | 2001-10-01 |
+|  3 | julien   | CN     | 2002-10-01 |
+|  4 | ganza    | ICP    | 2003-10-01 |
+|  5 | mireille | maths  | 2005-10-01 |
++----+----------+--------+------------+
+4 rows in set (0.80 sec)
+
+mysql>
+
